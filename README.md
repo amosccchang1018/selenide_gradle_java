@@ -1,10 +1,4 @@
-[![GitHub stars](https://img.shields.io/github/stars/ngoanh2n/selenide-junit5-allure-example.svg?style=social&label=Star&maxAge=2592000)](https://github.com/ngoanh2n/selenide-junit5-allure-example/stargazers/)
-[![GitHub watchers](https://img.shields.io/github/watchers/ngoanh2n/selenide-junit5-allure-example.svg?style=social&label=Watch&maxAge=2592000)](https://github.com/ngoanh2n/selenide-junit5-allure-example/watchers/)
-[![GitHub forks](https://img.shields.io/github/forks/ngoanh2n/selenide-junit5-allure-example.svg?style=social&label=Fork&maxAge=2592000)](https://github.com/ngoanh2n/selenide-junit5-allure-example/network/members/)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
-[![badge-jdk](https://img.shields.io/badge/jdk-8-blue.svg)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-[![Build Status](https://travis-ci.org/ngoanh2n/selenide-junit5-allure-example.svg?branch=master)](https://travis-ci.org/ngoanh2n/selenide-junit5-allure-example)
 
 # Selenide, JUnit5, Allure Example
 
