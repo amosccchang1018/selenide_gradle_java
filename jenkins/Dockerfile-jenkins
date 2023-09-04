@@ -1,0 +1,23 @@
+FROM jenkins/jenkins:lts
+
+# Skip the plug installation
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jdk curl maven && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh get-docker.sh && \
+    apt-get clean;
+
+# Copy the shell script into the Docker container
+COPY run_local.sh /var/jenkins_home/run_local.sh
+RUN chmod +x /var/jenkins_home/run_local.sh
+
+# Test : install Jenkins plugins
+COPY jenkins/plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+
+# Copy the init.groovy script into the Docker image
+COPY jenkins/init.groovy /usr/share/jenkins/ref/init.groovy.d/

@@ -1,0 +1,43 @@
+#FROM ubuntu:20.04
+#
+## Define environment variables
+#ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+#
+## Switch to root user
+#USER root
+#
+## Install required packages and tools
+#RUN apt-get update && \
+#    apt-get install -y openjdk-11-jdk curl wget maven gnupg && \
+#    apt-get clean && \
+#    rm -rf /var/lib/apt/lists/*
+#
+## Add Jenkins' official repository
+#RUN wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+#RUN sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+#
+## Install Jenkins
+#RUN apt-get update && \
+#    apt-get install -y jenkins && \
+#    apt-get clean && \
+#    rm -rf /var/lib/apt/lists/*
+#
+## Install Docker
+#RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
+#    sh get-docker.sh && \
+#    rm get-docker.sh
+#
+## Create directories and copy files
+#RUN mkdir -p /var/jenkins_home
+#COPY ../run_local.sh /var/jenkins_home/run_local.sh
+#RUN chmod +x /var/jenkins_home/run_local.sh
+#
+## Download jenkins-plugin-cli and install plugins
+#RUN curl -L https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.11.0/jenkins-plugin-manager-2.11.0.jar -o /usr/local/bin/jenkins-plugin-manager.jar
+#COPY plugins.txt /tmp/plugins.txt
+#RUN java -jar /usr/local/bin/jenkins-plugin-manager.jar --plugin-file /tmp/plugins.txt --plugin-download-directory /var/jenkins_home/plugins
+#
+#COPY AutomationTrello/init.groovy /usr/share/jenkins/ref/init.groovy.d/init.groovy.override
+#
+## Start Jenkins
+#ENTRYPOINT ["jenkins"]
