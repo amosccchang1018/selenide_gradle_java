@@ -22,7 +22,7 @@ import static com.codeborne.selenide.Selenide.*;
  * */
 
 
-public class ExampleTest extends BaseTest {
+public class WebE2ETest extends BaseTest {
 
     @Test
     @Description("Find a specific ring and add to my favorite")

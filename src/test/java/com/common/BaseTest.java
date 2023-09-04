@@ -1,111 +1,89 @@
-package com.github.ngoanh2n.sjae.common;
+package com.common;
 
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
-import com.codeborne.selenide.logevents.SelenideLogger;
-import com.github.automatedowl.tools.AllureEnvironmentWriter;
-import com.github.ngoanh2n.sjae.pages.LoginPage;
-import com.github.ngoanh2n.sjae.pages.PortalPage;
-import com.google.common.collect.ImmutableMap;
-import io.qameta.allure.selenide.AllureSelenide;
+import com.common.constants.UrlConstants;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.Cookie;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.open;
 import static java.lang.invoke.MethodHandles.lookup;
 
 /**
- * BaseTest class
- * <br/>
- *
- * @author ngoanh2n
- */
+ * @Description: Base test class
+ * @Author: Chi-Chun Chang
+ * @Date: 2023/08/23
+ * */
 
-public abstract class BaseTest {
+public class BaseTest {
 
-    private final static Logger logger = LoggerFactory.getLogger(lookup().lookupClass());
+    public Logger logger = LoggerFactory.getLogger(lookup().lookupClass());
+    String domain = "test";
+    String baseUrl = "https://%s.%s";
+    private static String fullUrl;
     private final static String selenideProperties = "selenide.properties";
+    private Map<String, String> keyMap = new HashMap<>();
 
-    protected PortalPage portalPage;
+    protected WebDriver driver;
 
     @BeforeAll
-    static void setupClass() throws IOException {
-        /*
-         * Add AllureSelenide listener
-         */
-        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
+    public void setupClass() {
 
-        /*
-         * Load selenide.properties file in resources
-         */
-        Properties props = new Properties();
-        InputStream inputStream = BaseTest.class
-                .getClassLoader()
-                .getResourceAsStream(selenideProperties);
-        props.load(inputStream);
-
-        if (!props.isEmpty()) {
-            for (Object propObj : props.keySet()) {
-                String prop = String.valueOf(propObj);
-
-                if (!System.getProperties().containsKey(prop)) {
-                    System.setProperty(prop, props.getProperty(prop));
-                }
-            }
-        }
-
-        logger.info("Loading selenide properties as {}", selenideProperties);
+        System.setProperty("webdriver.gecko.driver", "./drivers/mac/geckodriver");
+        System.setProperty("selenide.browser", "firefox");
+        open("about:blank");
+        driver = WebDriverRunner.getWebDriver();
     }
 
     @AfterAll
     static void cleanupClass() {
-        /*
-         * Generate environment properties to Allure report
-         * */
-        ImmutableMap.Builder<String, String> environmentBuilder = ImmutableMap.builder();
-        /*
-         * From selenide.properties
-         * */
-        System.getProperties().forEach((key, val) -> {
-            if (key.toString().startsWith("selenide.")) {
-                environmentBuilder.put(key.toString(), val.toString());
-            }
-        });
-        /*
-         * From allure.properties
-         * */
-        System.getProperties().forEach((key, val) -> {
-            if (key.toString().startsWith("allure.")) {
-                environmentBuilder.put(key.toString(), val.toString());
-            }
-        });
-        AllureEnvironmentWriter.allureEnvironmentWriter(
-                environmentBuilder.build(),
-                System.getProperty("allure.results.directory") + "/"
-        );
-
-        if (WebDriverRunner.hasWebDriverStarted()) {
-            WebDriverRunner.closeWebDriver();
-        }
-        SelenideLogger.removeListener("AllureSelenide");
     }
 
     @BeforeEach
     protected void setupTest() {
-        portalPage = open("/users/login", LoginPage.class)
-                .login("ngoanh2n", "ngoanh2n");
+        Configuration.browserSize = "1920x1080";
+        setDomain(com.constants.DomainConstants.getStage());
+        setUrl(UrlConstants.MAIN_PAGE);
     }
 
     @AfterEach
     protected void cleanupTest() {
-        portalPage.logout();
-        WebDriverRunner.closeWindow();
+        Selenide.closeWebDriver();
+    }
+
+    public void setUrl(String url) {
+        if (domain == null) {
+            throw new IllegalStateException("Domain is not set. Please set a domain first.");
+        }
+        fullUrl = String.format(baseUrl, domain, url);
+        logger.info("url : " + fullUrl);
+    }
+
+    public String getUrl() {
+        if (fullUrl == null) {
+            throw new IllegalStateException("URL is not set. Please set a domain and URL first.");
+        }
+        return fullUrl;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+        logger.info("domain : " + this.domain);
+    }
+
+    public void setCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        driver.manage().addCookie(cookie);
     }
 }
