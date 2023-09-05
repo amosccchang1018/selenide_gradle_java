@@ -21,7 +21,7 @@ The recommended PC specifications for executing these test cases are as follows:
 
   ```sh
 . 
-CyclomediaAssignment_ChiChun
+selenide_junit5_gradle_ChiChun
 ├── run_local.sh (Script to run test cases)
 ├── runJenkins.sh (Script to run test cases in container and manage with Jenkins)
 ├── .gitignore
@@ -36,29 +36,31 @@ CyclomediaAssignment_ChiChun
     │   └── test
     │       └── java
     │       │     └── com
-    │       │         ├── constants 
-    │       │         ├── utils     (Functions for UI/API/DB ... actions)
-    │       │         └── testcases (Test cases for the application)
-    │       │             ├── TrelloAPITest (API test)
-    │       │             ├── CucumberCreateAndInviteToBoardTest.java (UI test for triggering .feature)
-    │       │             ├── ViewInvitationAndDeleteBoardTest.java   (UI test for triggering .feature)
-    │       │             └── ...
+    │       │         └── common
+    │       │              ├── constants 
+    │       │              ├── utils     (Functions for UI/API/DB ... actions)
+    │       │              └── scripts (Test cases for the application)
+    │       │                   ├── APITest.java (API test)
+    │       │                   ├── APIChainingTest.java (API Chaining test)
+    │       │                   ├── WebE2ETest.java   (UI E2E Test)
+    │       │                   └── ...
     │       └── resources
-    │            └── com
-    │                └── features 
-    │                │   ├── CucumberCreateAndInviteToBoardTest.feature (Cucumber file)
-    │                │   └── ViewInvitationAndDeleteBoardTest.feature   (Cucumber file)
-    │                │
-    │                ├── account.properties (Account management)
-    │                ├── env.properties     (Environment setting) 
-    │                └── cucumber.properties
+    │            ├── account.properties (Account management)
+    │            ├── env.properties     (Environment setting) 
+    │            ├── log4j.properties
+    │            ├── junit-platform.properties
+    │            ├── allure.properties
+    │            └── selenide.properties
     │ 
-    └── target
-        ├── pom.xml (Dependencies)
-        ├── cucumber-reports (Folder where report generated on execution)
-        ├── init.groovy (Jenkin pipline scripts)
-        └── ...
-    
+    ├── .gitignore
+    ├── .travis.yml
+    ├── LICENSE
+    ├── readme.md
+    ├── build.gradle
+    ├── gradle.properties
+    ├── gradlew
+    ├── gradlew.bat
+    └── settings.gradle 
   ```
 
 
@@ -71,8 +73,8 @@ CyclomediaAssignment_ChiChun
 The following tools must be installed to execute this project:
 
 1. [docker](https://docs.docker.com/engine/install/)
-2. [Java 11](https://www.oracle.com/java/technologies/downloads/) - Note: While the assignment specifies a preferred language, I'm currently using Java, but with all the same frameworks as requested in the requirements.(for local execution)
-3. [Maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) (for local execution)
+2. [Java 11](https://www.oracle.com/java/technologies/downloads/) (for local execution)
+3. [Grale](https://docs.gradle.org/current/userguide/dependency_management_for_java_projects.html) (for local execution)
 3. IDE [IntelliJ](https://www.jetbrains.com/idea/download/) (for local execution)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -86,37 +88,28 @@ The following tools must be installed to execute this project:
 To set desired domain, navigate to the following file:
 
 ```sh
-cd path/to/CyclomediaAssignment_ChiChun/AutomationTrello/src/test/resources/env.properties
+cd path/to/selenide_junit5_gradle_ChiChun/src/test/resources/env.properties
 ```
 In the env.properties file, you are able to set the environment first.
 
-![Imgur](https://imgur.com/HgZn8vW.png)
+![Imgur](https://i.imgur.com/JvkevS8.png)
 
 ### About test cases
-![Imgur](https://i.imgur.com/aygI0rC.png) 
+![Imgur](https://i.imgur.com/OZFoVNH.png)
 
 The test case design is based on the documented requirements, as illustrated in the figures above. The required features (represented by the green and blue blocks) are located in the following files:
 
-a. TrelloAPITest (API test - optional)
+a. APITest (API test - optional)
 
-b. CucumberCreateAndInviteToBoardTest.feature (UI test - create and invite)
+b. APIChainingTest (API Chaining test - optional)
 
-c. ViewInvitationAndDeleteBoardTest.feature   (UI test - view and delete)
+c. WebE2ETest.java  (UI test - search and add)
 
 To access them, navigate to the following directory:
 
 ```sh
-cd path/to/CyclomediaAssignment_ChiChun/AutomationTrello/src/test/java/com/testcases
+cd path/to/selenide_junit5_gradle_ChiChun/src/test/java/com/scripts
 ```
-
-and 
-```sh
-cd path/to/CyclomediaAssignment_ChiChun/AutomationTrello/src/test/resources/com/features
-```
-
-Note : Due to the **two-factor authentication** required for Google accounts in the `production environment`, many **UI steps in the feature test have been temporarily replaced with API requests and responses** to ensure smoother testing. 
-
-![Imgur](https://i.imgur.com/xm2uElH.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -126,28 +119,28 @@ Note : Due to the **two-factor authentication** required for Google accounts in 
 
 * [Local Execution with IDE](#local-execution-with-ide)
 * [Execution with shell script (no need to use IDE)](#execution-with-shell-script-no-need-to-use-ide)
-* [Execution in container and manage with Jenkins](#execution-in-container-and-manage-with-jenkins)
+* [Execution in container and manage with Jenkins (in process)](#execution-in-container-and-manage-with-jenkins)
 * [Automatically generated report](#automatically-generated-report)
 
 ### Local Execution with IDE
 
 1. Install the **prerequisites** listed above in your local environment.
 2. Launch the **IntelliJ IDE** after installation. 
-3. Upon initial launch, the project needs to be built with the necessary configurations and dependencies. To do this, click on **Maven** > **Refresh icon** (Reload All Maven Projects). This might take a while, so your patience is appreciated.
+3. Upon initial launch, the project needs to be built with the necessary configurations and dependencies. To do this, click on **Gradle** > **Refresh icon** (Reload All Gradle Dependencies). This might take a while, so your patience is appreciated.
   
-   ![Imgur](https://i.imgur.com/WETlznc.png)
+   ![Imgur](https://i.imgur.com/ANVg0fe.png)
 
 4. Choose a specific test case or all test cases in a class, then click the run icon.
 
-   ![Imgur](https://i.imgur.com/1kDawbR.png)
+   ![Imgur](https://i.imgur.com/t109amk.png)
 
 5. After clicking, select "Debug '____Test' ".
 
-   ![Imgur](https://i.imgur.com/CTKu5XW.png)
+   ![Imgur](https://i.imgur.com/Lp5vwvV.png)
 
 6. Wait for the execution to complete. The results and any error messages (useful for troubleshooting) will be displayed in the Debugger console.
 7. 
-   ![Imgur](https://i.imgur.com/q4zIBKn.png)
+   ![Imgur](https://i.imgur.com/zm8SAC6.png)
 
 
 
@@ -158,10 +151,10 @@ Follow these steps to execute the test cases shell script:
 1. Navigate to the path where the repository is located and locate the shell script `run.sh`.
 ```bash
 ## For Linux/Mac users:
-cd path/to/CyclomediaAssignment_ChiChun/
+cd path/to/selenide_junit5_gradle_ChiChun/
 
 ##  For Windows users:
-cd path\to\CyclomediaAssignment_ChiChun\
+cd path\to\selenide_junit5_gradle_ChiChun\
 ```
 2. Execute the `run.sh` with parameter - test cases in your terminal.
 
@@ -172,23 +165,29 @@ cd path\to\CyclomediaAssignment_ChiChun\
 chmod +x run.sh
 
 ## Execution
-# Add your test case name as a parameter, for example: "CucumberCreateAndInviteToBoardTest"
-./run.sh <test_case_name>
+# Add your test class/method/if generate report / if display report
+# for example: "./run_local.sh WebE2ETest findProductAndAddToCartTest true false"
+./run.sh <test_case_class_name> <test_case_method_name> <true/false for generating report> <true/false for show report>
+
 
 
 # For Windows users:
 
 ## Execution
-REM Add your test case name as a parameter, for example: "CucumberCreateAndInviteToBoardTest"
-run.bat <test_case_name>
+# Add your test class/method/if generate report / if display report
+# for example: "run.bat WebE2ETest findProductAndAddToCartTest true false"
+run.bat <test_case_class_name> <test_case_method_name> <true/false for generating report> <true/false for show report>
+
 ``` 
 
-3. After executing `./run.sh <test_case_name>` or `run.bat <test_case_name>`, dependencies will be installed, and the test cases will be run. The results will be displayed in the terminal.
+3. After executing `./run.sh <test_case_class_name> <test_case_method_name> <true/false for generating report> <true/false for show report>
+   ` or `run.bat <test_case_class_name> <test_case_method_name> <true/false for generating report> <true/false for show report>
+   `, dependencies will be installed, and the test cases will be run. The results will be displayed in the terminal.
 
- ![Imgur](https://i.imgur.com/JYiI29W.png)
+ ![Imgur](https://i.imgur.com/JjQgrIL.png)
 
 
-### Execution in container and manage with Jenkins
+### Execution in container and manage with Jenkins (in process)
 
 * Prerequsite: Please help make sure you have **open docker** and **see it's running(mac/win)**.
 
@@ -198,11 +197,11 @@ For setting up the docker container, navigate to the repository directory first,
 
 ```sh
 ## For Linux/Mac users:
-cd path/to/CyclomediaAssignment_ChiChun/
+cd path/to/selenide_junit5_gradle_ChiChun/
 ./runJenkins.sh
 
 ##  For Windows users:
-cd path\to\CyclomediaAssignment_ChiChun\
+cd path\to\selenide_junit5_gradle_ChiChun\
 runJenkins.bat
 ```
 
@@ -224,42 +223,29 @@ Note-2: The shell script will build a container with the following components:
 
 *3.Java 11*
 
-*4.Maven*
+*4.Gradle*
 
-*5.Selenium*
+*5.Selenide*
 
-*6.Cucumber*
+*6.Junit5*
 
-*7.testNG*
+*7.Allure-Report*
 ## Automatically generated report
 When the test cases is triggered by either shell script or on jenkins, the test report will be generated automatically and located in the folder 
 
-For feature(UI) test report : 
+For Test report : 
 
 ```sh
-cd path/to/CyclomediaAssignment_ChiChun/AutomationTrello/target/cucumber-reports
+cd path/to/selenide_junit5_gradle_ChiChun/build/reports/allure-report
 ```
 
-![Imgur](https://i.imgur.com/x03LJ6c.png)
-
-or
-
-For API test report :
-
-```sh
-cd path/to/CyclomediaAssignment_ChiChun/AutomationTrello/target/testng_report_<timestamp>
-```
-
-![Imgur](https://i.imgur.com/MNO6GXo.png)
+![Imgur](https://i.imgur.com/ibW7EEk.png)
 
 
 And the reports will display the steps and errors in detail
 
-Feature(UI) test report : 
-![Imgur](https://i.imgur.com/Nq4amGw.png)
-
-API test report :
-![Imgur](https://i.imgur.com/9nwuu7v.png)
+Test report (set **<true/false for show report>** as **true** will also pop-up automatically): 
+![Imgur](https://i.imgur.com/uQoAdST.png)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -306,10 +292,9 @@ LinkedIn : https://www.linkedin.com/in/ccchang1018/
 ## Acknowledgments
 
 The following acknowledgments should provide insights into this project if certain aspects are unfamiliar to you. Please review them for a better understanding of the project.
-* [Building Java Projects with Maven](https://spring.io/guides/gs/maven/)
-* [Selenium Tutorial](https://www.javatpoint.com/selenium-tutorial)
-* [Cucumber Tutorial](https://www.tutorialspoint.com/cucumber/index.htm)
-* [TestNG tutorial](https://testng.org/doc/)
+* [Building Java Projects with Gradle](https://spring.io/guides/gs/gradle/)
+* [Introduction to Selenide](https://www.baeldung.com/selenide)
+* [JUnit Tutorial](https://www.tutorialspoint.com/junit/index.htm)
 * [The Java™ Tutorials](https://docs.oracle.com/javase/tutorial/)
 * [Overview | Docker Documentation](https://docs.docker.com/get-started/)
 * [Dockerfile tutorial](https://www.tutorialspoint.com/docker/docker_file.htm)
