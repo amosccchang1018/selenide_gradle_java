@@ -21,18 +21,19 @@ def dslScriptLoader = new DslScriptLoader(new JenkinsJobManagement(System.out, [
 
 
 // Dashboard name
-String View_UI = "Trello Feature Test";
-String View_API = "Trello API Test";
+String View_UI = "UI Feature Test";
+String View_API = "API Test";
+String View_APIChain = "API Chaining Test";
 
 // UI test
-String featureTest_CreateAndInvite = 'Create And Invite To Board Test'
-String featureTest_ViewAndDelete = 'View Invitation And Delete Board Test'
+String featureTest_AddRingToFavorite = 'Add Specific Ring To Favorite Test'
 
 // API test
-String APITest_Dashboard = "Dashboard API Test"
+String APITest = 'Related API Test'
+String APIChainTest = 'Related API Chaining Test'
 
 String dslScript = """
-pipelineJob('${featureTest_CreateAndInvite}') {
+pipelineJob('${featureTest_AddRingToFavorite}') {
     triggers {
         cron('0 1 * * *')
     }
@@ -46,7 +47,7 @@ pipelineJob('${featureTest_CreateAndInvite}') {
                     
                     stage('Test') {
                         echo 'Start testing'
-                        sh '/var/jenkins_home/run_local.sh CucumberCreateAndInviteToBoardTest'
+                        sh '/var/jenkins_home/run_local.sh WebE2ETest findProductAndAddToCartTest'
                     }
                     
                     stage('Deploy') {
@@ -59,7 +60,7 @@ pipelineJob('${featureTest_CreateAndInvite}') {
     }
 }
 
-pipelineJob('${featureTest_ViewAndDelete}') {
+pipelineJob('${APITest}') {
     triggers {
         cron('0 1 * * *')
     }
@@ -73,7 +74,7 @@ pipelineJob('${featureTest_ViewAndDelete}') {
                     
                     stage('Test') {
                         echo 'Start testing'
-                        sh '/var/jenkins_home/run_local.sh ViewInvitationAndDeleteBoardTest'
+                        sh '/var/jenkins_home/run_local.sh APITest'
                     }
                     
                     stage('Deploy') {
@@ -86,7 +87,7 @@ pipelineJob('${featureTest_ViewAndDelete}') {
     }
 }
 
-pipelineJob('${APITest_Dashboard}') {
+pipelineJob('${APIChainTest}') {
     triggers {
         cron('0 0 * * *')
     }
@@ -100,7 +101,7 @@ pipelineJob('${APITest_Dashboard}') {
                 
                     stage('Test') {
                         echo 'Start testing'
-                        sh '/var/jenkins_home/run_local.sh TrelloAPITest'
+                        sh '/var/jenkins_home/run_local.sh APIChainingTest'
                     }
                     
                      stage('Deploy') {
@@ -115,8 +116,7 @@ pipelineJob('${APITest_Dashboard}') {
 
 listView('${View_UI}') {
     jobs {
-        name('${featureTest_CreateAndInvite}')
-        name('${featureTest_ViewAndDelete}')
+        name('${featureTest_AddRingToFavorite}')
     }
         columns {
         status()
@@ -130,7 +130,21 @@ listView('${View_UI}') {
 }
 listView('${View_API}') {
     jobs {
-        name('${APITest_Dashboard}')
+        name('${APITest}')
+    }
+        columns {
+        status()
+        weather()
+        name()
+        lastSuccess()
+        lastFailure()
+        lastDuration()
+        buildButton()
+    }
+}
+listView('${View_APIChain}') {
+    jobs {
+        name('${APIChainTest}')
     }
         columns {
         status()
