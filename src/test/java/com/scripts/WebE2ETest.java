@@ -16,12 +16,12 @@ import static com.codeborne.selenide.Selenide.*;
 
 
 /**
- * @Description: Example tests
+ * @Description: UI E2E tests
  * @Author: Chi-Chun Chang
  * @Date: 2023/08/23
  * */
 
-
+@Owner("Chi-Chun Chang")
 public class WebE2ETest extends BaseTest {
 
     @Test
@@ -29,27 +29,27 @@ public class WebE2ETest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     void findProductAndAddToCartTest() {
         String DESIRE_ITEM = "Honey Mini Signet";
+        String TestAAccount_AMOS = "User_1";
 
         // Step 1: Navigate to the homepage
         open(UrlConstants.MAIN_PAGE);
 
-        // login first
+        // Step 2: Login
         UIUtil.clickElementByCSS(ElementConstants.LOGIN);
 
-        String TestAAccount_AMOS = "User_1";
         UIUtil.sendKeyByCSS(ElementConstants.EMAIL_BOX, AccountConstants.getValue(TestAAccount_AMOS, "email"));
         UIUtil.sendKeyByCSS(ElementConstants.PASSWORD_BOX, AccountConstants.getValue(TestAAccount_AMOS, "pwd"));
         UIUtil.clickElementByCSS(ElementConstants.LOGIN_CONTINUE);
 
-        // Step 2: Click the search icon
+        // Step 3: Click the search bar
         SelenideElement buttonElement = $(ElementConstants.SEARCH);
         buttonElement.shouldBe(Condition.visible, Duration.ofSeconds(5)).click();
 
-        // Step 3: Enter the search keyword
+        // Step 4: Enter the search keyword and click the item
         UIUtil.sendKeyByCSS(ElementConstants.SEARCH_BAR, DESIRE_ITEM);
         UIUtil.clickElementByCSS(ElementConstants.SELECTED_RING);
 
-        // Step 4: Add to my favorite
+        // Step 5: Add to my favorite if it's not added
         String pagesource = WebDriverRunner.getWebDriver().getPageSource();
          if (pagesource.contains(ElementConstants.ADD_FAVORITE)){
           UIUtil.clickElementByCSS(ElementConstants.ADD_FAVORITE);
@@ -58,7 +58,7 @@ public class WebE2ETest extends BaseTest {
              logger.info("already added");
         }
 
-        // Step 5: Check if it's added
+        // Step 6: Check if it's added
         UIUtil.clickElementByCSS(ElementConstants.MY_FAVORITE);
         pagesource = WebDriverRunner.getWebDriver().getPageSource();
         assertTrue(pagesource.contains(DESIRE_ITEM));
