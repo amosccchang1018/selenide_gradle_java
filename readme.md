@@ -50,7 +50,7 @@ selenide_junit5_gradle_ChiChun
     │            ├── log4j.properties
     │            ├── junit-platform.properties
     │            ├── allure.properties
-    │            └── selenide.properties
+    │            └── selenide.properties (selenide setting)
     │ 
     ├── .gitignore
     ├── .travis.yml
@@ -95,7 +95,7 @@ In the env.properties file, you are able to set the environment first.
 ![Imgur](https://i.imgur.com/JvkevS8.png)
 
 ### About test cases
-![Imgur](https://i.imgur.com/OZFoVNH.png)
+![Imgur](https://i.imgur.com/XNMSLDs.png)
 
 The test case design is based on the documented requirements, as illustrated in the figures above. The required features (represented by the green and blue blocks) are located in the following files:
 
@@ -119,7 +119,7 @@ cd path/to/selenide_junit5_gradle_ChiChun/src/test/java/com/scripts
 
 * [Local Execution with IDE](#local-execution-with-ide)
 * [Execution with shell script (no need to use IDE)](#execution-with-shell-script-no-need-to-use-ide)
-* [Execution in container and manage with Jenkins (in process)](#execution-in-container-and-manage-with-jenkins)
+* [Execution in container and manage with Jenkins (in process)](#execution-in-container-and-manage-with-jenkins-in-process)
 * [Automatically generated report](#automatically-generated-report)
 
 ### Local Execution with IDE
@@ -250,8 +250,12 @@ Test report (set **<true/false for show report>** as **true** will also pop-up a
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Demo
 
+---
+[![Imgur](https://i.imgur.com/WsjrXmt.png)](https://youtu.be/NICERGVRpyY)
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Future Testing Plans and Infrastructure Recommendations
 
